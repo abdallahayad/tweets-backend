@@ -24,7 +24,7 @@ const {
   deleteAComment,
 } = require('./routes/tweets');
 
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: true }));
 
 // User Routes
 app.post('/signup', signup);
