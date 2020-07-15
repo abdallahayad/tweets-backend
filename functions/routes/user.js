@@ -4,6 +4,7 @@ const { admin, db } = require('../util/admin');
 const path = require('path');
 const axios = require('axios');
 const firebaseConfig = require('../firebaseConfig');
+
 firebase.initializeApp(firebaseConfig);
 
 exports.signup = (req, res) => {

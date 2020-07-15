@@ -1,5 +1,6 @@
 const { admin, db } = require('../util/admin');
 const { validateComment } = require('../util/validators');
+
 // Create a tweet
 exports.tweet = (req, res) => {
   const tweet = {
@@ -159,7 +160,7 @@ exports.deleteATweet = (req, res) => {
     });
 };
 
-// Get one tweet with full details
+// Get tweet comments
 exports.getTweet = (req, res) => {
   let tweet = {};
   const tweetId = req.params.tweetId;
@@ -169,7 +170,6 @@ exports.getTweet = (req, res) => {
       if (!doc.exists) {
         return res.json({ error: "Tweet doesn't exist" });
       }
-      tweet.data = doc.data();
       db.collection('comments')
         .where('tweetId', '==', tweetId)
         .orderBy('createdAt', 'desc')
@@ -179,23 +179,13 @@ exports.getTweet = (req, res) => {
           data.docs.forEach((doc) => {
             tweet.comments.push({ ...doc.data(), commentId: doc.id });
           });
-          db.collection('likes')
-            .where('tweetId', '==', tweetId)
-            .get()
-            .then((data) => {
-              tweet.likes = [];
-              data.docs.forEach((doc) => {
-                tweet.likes.push(doc.data());
-              });
-              return res.json(tweet);
-            });
+          return res.json(tweet);
+        })
+        .catch((err) => {
+          res.status(500).json({ error: err });
         });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err });
     });
 };
-
 // Delete a comment
 exports.deleteAComment = (req, res) => {
   const username = req.username;
