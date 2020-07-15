@@ -22,6 +22,7 @@ const {
   deleteATweet,
   getTweet,
   deleteAComment,
+  getTweetComments,
 } = require('./routes/tweets');
 
 app.use(cors({ origin: true }));
@@ -39,7 +40,7 @@ app.post('/users', searchUsers);
 
 // Tweet Routes
 app.post('/tweet/add', FBAuth, tweet);
-app.get('/tweet/:tweetId', getTweet);
+app.get('/tweet/:tweetId', getTweetComments);
 app.get('/tweet/:tweetId/like', FBAuth, likeATweet);
 app.get('/tweet/:tweetId/unlike', FBAuth, unlikeATweet);
 app.post('/tweet/:tweetId/comment', FBAuth, commentOnATweet);

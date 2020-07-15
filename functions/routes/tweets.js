@@ -161,7 +161,7 @@ exports.deleteATweet = (req, res) => {
 };
 
 // Get tweet comments
-exports.getTweet = (req, res) => {
+exports.getTweetComments = (req, res) => {
   let tweet = {};
   const tweetId = req.params.tweetId;
   db.doc(`/tweets/${tweetId}`)
