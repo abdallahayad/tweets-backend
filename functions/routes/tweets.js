@@ -160,8 +160,8 @@ exports.deleteATweet = (req, res) => {
     });
 };
 
-// Get tweet comments
-exports.getTweetComments = (req, res) => {
+// Get Full tweet
+exports.getFullTweet = (req, res) => {
   let tweet = {};
   const tweetId = req.params.tweetId;
   db.doc(`/tweets/${tweetId}`)
@@ -170,6 +170,7 @@ exports.getTweetComments = (req, res) => {
       if (!doc.exists) {
         return res.json({ error: "Tweet doesn't exist" });
       }
+      tweet.data = doc.data();
       db.collection('comments')
         .where('tweetId', '==', tweetId)
         .orderBy('createdAt', 'desc')
@@ -179,11 +180,20 @@ exports.getTweetComments = (req, res) => {
           data.docs.forEach((doc) => {
             tweet.comments.push({ ...doc.data(), commentId: doc.id });
           });
-          return res.json(tweet);
-        })
-        .catch((err) => {
-          res.status(500).json({ error: err });
+          db.collection('likes')
+            .where('tweetId', '==', tweetId)
+            .get()
+            .then((data) => {
+              tweet.likes = [];
+              data.docs.forEach((doc) => {
+                tweet.likes.push(doc.data());
+              });
+              return res.json(tweet);
+            });
         });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
     });
 };
 // Delete a comment
